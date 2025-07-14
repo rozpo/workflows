@@ -12,6 +12,10 @@ on:
         type: string
         description: "Comma-separated list of labels to add to the pull request."
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   set_labels:
     runs-on: ubuntu-latest
