@@ -1,0 +1,90 @@
+name: PR Comment
+
+on:
+  workflow_call:
+    inputs:
+      pr_number:
+        required: true
+        type: number
+        description: "The pull request number to comment on."
+      message:
+        required: true
+        type: string
+        description: "The message to post in the pull request comment."
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: ${{ inputs.pr_number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "${{ inputs.message }}"
+            })
+
+  annotations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create annotations
+        run: |
+          echo "::warning file=main.dart,line=1::Missing semicolon"
+          echo "::warning file=README.md,line=2::Test warning"
+          echo "::error file=main.dart,line=5::Test failed"
+          echo "::notice::Deployment completed successfully"
+
+  commit_status_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set commit status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',
+              description: 'Tests: 42 passed, 3 failed',
+              context: 'test-results'
+            })
+
+  # create_release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Create Release
+  #       uses: actions/github-script@v7
+  #       with:
+  #         script: |
+  #           github.rest.repos.createRelease({
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             tag_name: 'v1.0.0',
+  #             name: 'Release v1.0.0',
+  #             body: 'Deployment Summary:\n- Environment: Production\n- Status: Success'
+  #           })
+
+  detailed_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create check run
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const check = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Test Results',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion: 'success',
+              output: {
+                title: 'Test Summary',
+                summary: '42 passed, 3 failed',
+                text: '## Detailed Results\n- ✅ Unit tests: 30/30\n- ⚠️ Integration: 12/15'
+              }
+            })
+

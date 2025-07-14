@@ -1,0 +1,9 @@
+on:
+  workflow_call:
+
+jobs:
+  build_runner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
