@@ -8,6 +8,8 @@ on:
 jobs:
   comment:
     permissions:
+      checks: write  # Required for creating check runs
+      issues: write  # Required for creating/managing labels
       contents: write # releases
       pull-requests: write # pr comments
       statuses: write  # Required for creating commit statuses
