@@ -7,7 +7,11 @@ on:
 
 jobs:
   comment:
+    permissions:
+      contents: read
+      pull-requests: write
     uses: ./.github/workflows/2_pr_comment.yaml
+    # secrets: inherit
     with:
       pr_number: ${{ github.event.pull_request.number }}
       message: "👋 Thanks for your PR! We'll review it soon."
