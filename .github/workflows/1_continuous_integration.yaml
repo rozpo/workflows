@@ -8,13 +8,19 @@ on:
 jobs:
   comment:
     permissions:
-      checks: write  # Required for creating check runs
-      issues: write  # Required for creating/managing labels
+      checks: write # Required for creating check runs
+      issues: write # Required for creating/managing labels
       contents: write # releases
       pull-requests: write # pr comments
-      statuses: write  # Required for creating commit statuses
+      statuses: write # Required for creating commit statuses
     uses: ./.github/workflows/2_pr_comment.yaml
     # secrets: inherit
     with:
       pr_number: ${{ github.event.pull_request.number }}
       message: "👋 Thanks for your PR! We'll review it soon."
+
+  call-add-labels:
+    uses: ./.github/workflows/3_set_labels.yaml
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      labels: "tests-passed, coverage-85, ready-for-review"
