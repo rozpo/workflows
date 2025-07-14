@@ -20,6 +20,9 @@ jobs:
       message: "👋 Thanks for your PR! We'll review it soon."
 
   call-add-labels:
+    permissions:
+      issues: write
+      pull-requests: write
     uses: ./.github/workflows/3_set_labels.yaml
     with:
       pr_number: ${{ github.event.pull_request.number }}
